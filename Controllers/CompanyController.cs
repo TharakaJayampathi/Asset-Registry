@@ -1,4 +1,5 @@
-﻿using AssetRegistry.Models;
+﻿using AssetRegistry.DTOs.Company;
+using AssetRegistry.Models;
 using AssetRegistry.Models.Company;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
@@ -58,6 +59,86 @@ namespace AssetRegistry.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = "An error occurred while retrieving data.", error = ex.Message });
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<HttpResponse<object>>> GetById(string id)
+        {
+            try
+            {
+                var data = await _collection.Find(x => x.Id == id).FirstOrDefaultAsync();
+
+                if (data == null)
+                {
+                    return NotFound(new HttpResponse<object>
+                    {
+                        Success = false,
+                        Message = $"No data found with id: {id}"
+                    });
+                }
+
+                var responsePayload = new
+                {
+                    id = data.Id,
+                    name = data.Name
+                };
+
+                return Ok(new HttpResponse<object>
+                {
+                    Success = true,
+                    Data = responsePayload
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new HttpResponse<object>
+                {
+                    Success = false,
+                    Message = "An error occurred while retrieving the data. " + ex.Message
+                });
+            }
+        }
+
+        [HttpPost("post")]
+        public async Task<IActionResult> Post([FromBody] CompanyDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "Invalid data",
+                    errors = ModelState
+                });
+            }
+
+            try
+            {
+                var jsonData = new Company
+                {
+                    CompanyId = dto.CompanyId,
+                    Name = dto.Name,
+                    Status = dto.Status
+                };
+
+                await _collection.InsertOneAsync(jsonData);
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Dashboard created successfully.",
+                    data = new { generatedId = jsonData.Id }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "An error occurred while inserting data.",
+                    error = ex.Message
+                });
             }
         }
     }
