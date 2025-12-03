@@ -1,16 +1,15 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace AssetRegistry.Models.Division
+namespace AssetRegistry.Models.Role
 {
-    public class Division
+    public class Role
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
-        public string DivisionId { get; set; }
+        public string RoleId { get; set; }
         public string Name { get; set; }
-        public string CompanyId { get; set; }
         public bool Status { get; set; }
     }
 }

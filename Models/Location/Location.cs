@@ -10,8 +10,8 @@ namespace AssetRegistry.Models.Location
         public string Id { get; set; }
         public string LocationId { get; set; }
         public string Address { get; set; }
-        public int CompanyId { get; set; }
-        public int DivisionId { get; set; }
+        public string CompanyId { get; set; }
+        public string DivisionId { get; set; }
         public bool Status { get; set; }
     }
 }
