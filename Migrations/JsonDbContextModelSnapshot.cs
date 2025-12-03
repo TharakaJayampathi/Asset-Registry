@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using test_backend.Data;
+using AssetRegistry.Data;
 
 #nullable disable
 
-namespace test_backend.Migrations
+namespace AssetRegistry.Migrations
 {
     [DbContext(typeof(JsonDbContext))]
     partial class JsonDbContextModelSnapshot : ModelSnapshot
@@ -21,7 +21,7 @@ namespace test_backend.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("test_backend.Models.Json", b =>
+            modelBuilder.Entity("AssetRegistry.Models.Json", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
-using test_backend.Models;
+using AssetRegistry.Models;
 
-namespace test_backend.Controllers
+namespace AssetRegistry.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

@@ -1,4 +1,4 @@
-﻿namespace test_backend.Models
+﻿namespace AssetRegistry.Models
 {
     public class MongoDbSettings
     {

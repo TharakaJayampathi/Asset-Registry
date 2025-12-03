@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using test_backend.Models;
+using AssetRegistry.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,4 +1,4 @@
-namespace test_backend
+namespace AssetRegistry
 {
     public class WeatherForecast
     {

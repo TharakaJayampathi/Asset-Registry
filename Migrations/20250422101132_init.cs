@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace test_backend.Migrations
+namespace AssetRegistry.Migrations
 {
     /// <inheritdoc />
     public partial class init : Migration

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using test_backend.Models;
+using AssetRegistry.Models;
 
-namespace test_backend.Data
+namespace AssetRegistry.Data
 {
     public class JsonDbContext : DbContext
     {
