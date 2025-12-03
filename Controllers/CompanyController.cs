@@ -49,7 +49,7 @@ namespace AssetRegistry.Controllers
                     if (doc.TryGetValue("CompanyId", out var companyIdValue) && companyIdValue.IsString)
                         companyId = companyIdValue.AsString;
 
-                    if (doc.TryGetValue("Status", out var statusValue) && companyIdValue.IsBoolean)
+                    if (doc.TryGetValue("Status", out var statusValue) && statusValue.IsBoolean)
                         status = statusValue.AsBoolean;
 
                     return new
@@ -80,7 +80,6 @@ namespace AssetRegistry.Controllers
             try
             {
                 var data = await _collection.Find(x => x.Id == id).FirstOrDefaultAsync();
-
                 if (data == null)
                 {
                     return NotFound(new HttpResponse<object>
@@ -156,19 +155,16 @@ namespace AssetRegistry.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(string id, Company updated)
+        [HttpPut]
+        public async Task<IActionResult> Put(Company updated)
         {
             try
             {
-                updated.Id = id;
-                var result = await _collection.ReplaceOneAsync(x => x.Id == id, updated);
-
+                var result = await _collection.ReplaceOneAsync(x => x.Id == updated.Id, updated);
                 if (result.MatchedCount == 0)
                 {
-                    return NotFound(new { message = $"No data found with id: {id}" });
+                    return NotFound(new { message = $"No data found with id: {updated.Id}" });
                 }
-
                 return Ok(new { message = "Data updated successfully." });
             }
             catch (Exception ex)
@@ -183,7 +179,6 @@ namespace AssetRegistry.Controllers
             try
             {
                 var result = await _collection.DeleteOneAsync(x => x.Id == id);
-
                 if (result.DeletedCount == 0)
                 {
                     return NotFound(new
@@ -192,7 +187,6 @@ namespace AssetRegistry.Controllers
                         message = $"No data found with id: {id}"
                     });
                 }
-
                 return Ok(new
                 {
                     success = true,
