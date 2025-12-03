@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using AssetRegistry.Models;
+﻿using AssetRegistry.Models.Company;
+using AssetRegistry.Models.Division;
+using AssetRegistry.Models.Location;
+using Microsoft.EntityFrameworkCore;
 
 namespace AssetRegistry.Data
 {
@@ -8,5 +10,8 @@ namespace AssetRegistry.Data
         public JsonDbContext(DbContextOptions<JsonDbContext> options) : base(options) { }
 
         public DbSet<Json> JsonData { get; set; }
+        public DbSet<Company> Company { get; set; }
+        public DbSet<Division> Division { get; set; }
+        public DbSet<Location> Location { get; set; }
     }
 }

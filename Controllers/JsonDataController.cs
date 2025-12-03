@@ -17,9 +17,6 @@ namespace AssetRegistry.Controllers
             _collection = database.GetCollection<Json>("JsonData");
         }
 
-
-
-
         [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<object>>> GetAll()
         {

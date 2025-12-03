@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>test_backend</RootNamespace>
+    <RootNamespace>AssetRegistry</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,7 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
+	<Folder Include="Migrations\" />
+    <Folder Include="DTOs\Company\" />
   </ItemGroup>
 
 </Project>
