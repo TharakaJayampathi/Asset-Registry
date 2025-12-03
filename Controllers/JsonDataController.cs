@@ -28,9 +28,6 @@ namespace AssetRegistry.Controllers
                 var projection = Builders<Json>.Projection
                     .Include(x => x.Id)
                     .Include(x => x.Name);
-                  
-          
-                   
 
                 var result = await _collection.Find(_ => true)
                     .Project(projection)
@@ -66,15 +63,6 @@ namespace AssetRegistry.Controllers
                 return StatusCode(500, new { message = "An error occurred while retrieving data.", error = ex.Message });
             }
         }
-
-
-
-
-
-
-
-
-
 
         [HttpGet("{id}")]
         public async Task<ActionResult<HttpResponse<object>>> GetById(string id)
@@ -156,9 +144,6 @@ namespace AssetRegistry.Controllers
                 });
             }
         }
-
-
-
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(string id, Json updated)
