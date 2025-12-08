@@ -152,7 +152,7 @@ namespace AssetRegistry.Controllers
                 var _user = await _userManager.FindByIdAsync(model.UserId);
                 if (_user == null)
                 {
-                    return UnprocessableEntity(new ResponseDTO { code = 404, msg = "User not found", data = "" });
+                    return NotFound(new ResponseDTO { code = 404, msg = "User not found", data = "" });
                 }
 
                 _user.FirstName = model.FirstName;
@@ -168,7 +168,29 @@ namespace AssetRegistry.Controllers
                 {
                     return UnprocessableEntity(new ResponseDTO { code = 500, msg = "User update failed", data = "" });
                 }
-                return Ok(new ResponseDTO { code = 200, msg = "User updated successfully!", data = "" });
+                return Ok(new ResponseDTO { code = 200, msg = "User updated successfully", data = "" });
+            }
+            catch (Exception ex)
+            {
+                return UnprocessableEntity(new ResponseDTO { code = 500, msg = $"{ex.Message}", data = "" });
+            }
+        }
+
+        [HttpPut]
+        [Route("Deactivate{id}")]
+        public async Task<IActionResult> DeactivateAsync(string id)
+        {
+            try
+            {
+                var _user = await _userManager.FindByIdAsync(id);
+                if (_user == null)
+                {
+                    return NotFound(new ResponseDTO { code = 404, msg = "User not found", data = "" });
+                }
+                _user.IsActive = false;
+                await _userManager.UpdateAsync(_user);
+
+                return Ok(new ResponseDTO { code = 200, msg = "User deactivate successfully", data = "" });
             }
             catch (Exception ex)
             {
