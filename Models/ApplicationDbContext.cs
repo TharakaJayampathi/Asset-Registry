@@ -1,4 +1,5 @@
-﻿using AssetRegistry.Models.User;
+﻿using AssetRegistry.Models.Company;
+using AssetRegistry.Models.User;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,7 +7,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
     private readonly IHttpContextAccessor? _httpContextAccessor;
 
-    // IHttpContextAccessor is optional to allow design-time migrations
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHttpContextAccessor? httpContextAccessor = null)
         : base(options)
     {
@@ -21,10 +21,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-
-        // Optional: Add any custom configurations
-        // builder.Entity<ApplicationUser>().Property(u => u.SomeProperty).HasMaxLength(100);
     }
 
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+    public DbSet<Company> Companies { get; set; }
 }

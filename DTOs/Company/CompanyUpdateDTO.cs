@@ -1,9 +1,10 @@
 ﻿namespace AssetRegistry.DTOs.Company
 {
-    public class CompanyDTO
+    public class CompanyUpdateDTO
     {
+        public int Id { get; set; }
         public string CompanyId { get; set; }
         public string Name { get; set; }
-        public bool Status { get; set; }
+        public bool IsActive { get; set; }
     }
 }
