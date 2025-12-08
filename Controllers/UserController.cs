@@ -1,4 +1,4 @@
-﻿using AssetRegistry.DTOs;
+﻿using AssetRegistry.DTOs.Response;
 using AssetRegistry.DTOs.Users;
 using AssetRegistry.Models.User;
 using Microsoft.AspNetCore.Identity;

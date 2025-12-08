@@ -1,4 +1,4 @@
-﻿namespace AssetRegistry.DTOs
+﻿namespace AssetRegistry.DTOs.Response
 {
     public class ResponseDTO
     {
