@@ -1,4 +1,5 @@
 ﻿using AssetRegistry.DTOs;
+using AssetRegistry.DTOs.LoginDTO;
 using AssetRegistry.Models.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

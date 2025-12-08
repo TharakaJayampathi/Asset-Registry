@@ -1,4 +1,5 @@
-﻿using AssetRegistry.Models.Company;
+﻿using AssetRegistry.Models.Claims;
+using AssetRegistry.Models.Company;
 using AssetRegistry.Models.User;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -25,4 +26,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
     public DbSet<Company> Companies { get; set; }
+    public DbSet<ClaimType> ClaimTypes { get; set; }
+    public DbSet<UserAuthToken> UserAuthTokens { get; set; }
+    public DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
 }

@@ -1,4 +1,4 @@
-﻿namespace AssetRegistry.DTOs
+﻿namespace AssetRegistry.DTOs.LoginDTO
 {
     public class LoginDTO
     {
