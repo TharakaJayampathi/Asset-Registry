@@ -1,10 +1,6 @@
-﻿using AssetRegistry.Models.Logs;
-using AssetRegistry.Models.User;
-using Microsoft.AspNetCore.Http;
+﻿using AssetRegistry.Models.User;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Newtonsoft.Json;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
@@ -31,6 +27,4 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     }
 
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
-    public DbSet<DataTransactionLog> DataTransactionLogs { get; set; }
-    public DbSet<TransactionLogDetail> TransactionLogDetails { get; set; }
 }
