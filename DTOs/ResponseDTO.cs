@@ -2,7 +2,8 @@
 {
     public class ResponseDTO
     {
-        public string Status { get; set; }
-        public string Message { get; set; }
+        public int code { get; set; }
+        public string msg { get; set; }
+        public object data { get; set; }
     }
 }

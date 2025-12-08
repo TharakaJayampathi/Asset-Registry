@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-using System.Net;
 
 namespace AssetRegistry.Controllers
 {
@@ -48,11 +47,11 @@ namespace AssetRegistry.Controllers
                                         RoleId = ur.RoleId,
                                         RoleName = ro.Name
                                     }).ToListAsync();
-                return Ok(_users);
+                return Ok(new ResponseDTO { code = 200, msg = "success", data = _users });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return UnprocessableEntity(new ResponseDTO { code = 500, msg = $"{ex.Message}", data = "" });
             }
         }
 
@@ -78,35 +77,35 @@ namespace AssetRegistry.Controllers
                                        RoleId = ur.RoleId,
                                        RoleName = ro.Name
                                    }).ToListAsync();
-                return Ok(_user);
+                return Ok(new ResponseDTO { code = 200, msg = "success", data = _user });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return UnprocessableEntity(new ResponseDTO { code = 500, msg = $"{ex.Message}", data = "" });
             }
         }
 
         [HttpPost]
         [Route("Create")]
-        public async Task<IActionResult> CreateAsync([FromBody] RegisterDTO model)
+        public async Task<IActionResult> CreateAsync([FromBody] UserCreateDTO model)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(model.Email) || !new EmailAddressAttribute().IsValid(model.Email))
                 {
-                    return StatusCode((int)HttpStatusCode.InternalServerError, new ResponseDTO { Status = "Error", Message = "Invalid email address!" });
+                    return UnprocessableEntity(new ResponseDTO { code = 500, msg = "Invalid email address", data = "" });
                 }
 
                 var userExists = await _userManager.FindByNameAsync(model.Email);
                 if (userExists != null)
                 {
-                    return StatusCode((int)HttpStatusCode.InternalServerError, new ResponseDTO { Status = "Error", Message = "User already exists!" });
+                    return UnprocessableEntity(new ResponseDTO { code = 500, msg = "User already exists", data = "" });
                 }
 
                 var _role = await _roleManager.FindByIdAsync(model.RoleId);
                 if (_role == null)
                 {
-                    return StatusCode((int)HttpStatusCode.InternalServerError, new ResponseDTO { Status = "Error", Message = "Role Not Exist." });
+                    return UnprocessableEntity(new ResponseDTO { code = 500, msg = "Role Not Exist", data = "" });
                 }
 
                 ApplicationUser user = new()
@@ -129,59 +128,51 @@ namespace AssetRegistry.Controllers
                 }
                 else
                 {
-                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDTO { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+                    return UnprocessableEntity(new ResponseDTO { code = 500, msg = "User creation failed", data = "" });
                 }
-                return Ok(new ResponseDTO { Status = "Success", Message = "User created successfully!" });
+                return Ok(new ResponseDTO { code = 200, msg = "User created successfully", data = "" });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return UnprocessableEntity(new ResponseDTO { code = 500, msg = $"{ex.Message}", data = "" });
             }
         }
 
         [HttpPut]
         [Route("Update")]
-        public async Task<IActionResult> UpdateAsync([FromBody] RegisterDTO model)
+        public async Task<IActionResult> UpdateAsync([FromBody] UserUpdateDTO model)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(model.Email) ||
-                    !new EmailAddressAttribute().IsValid(model.Email))
+                if (string.IsNullOrWhiteSpace(model.Email) || !new EmailAddressAttribute().IsValid(model.Email))
                 {
-                    return BadRequest(new { message = "Invalid email address." });
+                    return UnprocessableEntity(new ResponseDTO { code = 500, msg = "Invalid email address", data = "" });
                 }
 
-                var user = await _userManager.FindByNameAsync(model.Email);
-                if (user == null)
+                var _user = await _userManager.FindByIdAsync(model.UserId);
+                if (_user == null)
                 {
-                    return NotFound(new { message = "User not found." });
+                    return UnprocessableEntity(new ResponseDTO { code = 404, msg = "User not found", data = "" });
                 }
 
-                user.Email = model.Email;
-                user.UserName = model.Email;
-                user.FirstName = model.FirstName;
-                user.LastName = model.LastName;
+                _user.FirstName = model.FirstName;
+                _user.LastName = model.LastName;
+                _user.Email = model.Email;
+                _user.UserName = model.Email;
 
-                var result = await _userManager.UpdateAsync(user);
+                var result = await _userManager.UpdateAsync(_user);
+                var _token = await _userManager.GeneratePasswordResetTokenAsync(_user);
+                await _userManager.ResetPasswordAsync(_user, _token, model.Password);
 
                 if (!result.Succeeded)
                 {
-                    return BadRequest(new
-                    {
-                        message = "Update failed.",
-                        errors = result.Errors.Select(e => e.Description)
-                    });
+                    return UnprocessableEntity(new ResponseDTO { code = 500, msg = "User update failed", data = "" });
                 }
-
-                return Ok(new { message = "User updated successfully." });
+                return Ok(new ResponseDTO { code = 200, msg = "User updated successfully!", data = "" });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new
-                {
-                    message = "An error occurred while updating the user.",
-                    error = ex.Message
-                });
+                return UnprocessableEntity(new ResponseDTO { code = 500, msg = $"{ex.Message}", data = "" });
             }
         }
     }
