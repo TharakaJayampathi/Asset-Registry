@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 
 namespace AssetRegistry.Controllers
 {
@@ -47,11 +48,11 @@ namespace AssetRegistry.Controllers
                                         RoleId = ur.RoleId,
                                         RoleName = ro.Name
                                     }).ToListAsync();
-                return Ok(new ResponseDTO { code = 200, msg = "success", data = _users });
+                return Ok(new ResponseDTO { code = (int)HttpStatusCode.OK, msg = "success", data = _users });
             }
             catch (Exception ex)
             {
-                return UnprocessableEntity(new ResponseDTO { code = 500, msg = $"{ex.Message}", data = "" });
+                return UnprocessableEntity(new ResponseDTO { code = (int)HttpStatusCode.InternalServerError, msg = $"{ex.Message}", data = "" });
             }
         }
 
@@ -77,11 +78,11 @@ namespace AssetRegistry.Controllers
                                        RoleId = ur.RoleId,
                                        RoleName = ro.Name
                                    }).ToListAsync();
-                return Ok(new ResponseDTO { code = 200, msg = "success", data = _user });
+                return Ok(new ResponseDTO { code = (int)HttpStatusCode.OK, msg = "success", data = _user });
             }
             catch (Exception ex)
             {
-                return UnprocessableEntity(new ResponseDTO { code = 500, msg = $"{ex.Message}", data = "" });
+                return UnprocessableEntity(new ResponseDTO { code = (int)HttpStatusCode.InternalServerError, msg = $"{ex.Message}", data = "" });
             }
         }
 
@@ -93,19 +94,19 @@ namespace AssetRegistry.Controllers
             {
                 if (string.IsNullOrWhiteSpace(model.Email) || !new EmailAddressAttribute().IsValid(model.Email))
                 {
-                    return UnprocessableEntity(new ResponseDTO { code = 500, msg = "Invalid email address", data = "" });
+                    return UnprocessableEntity(new ResponseDTO { code = (int)HttpStatusCode.InternalServerError, msg = "Invalid email address", data = "" });
                 }
 
                 var userExists = await _userManager.FindByNameAsync(model.Email);
                 if (userExists != null)
                 {
-                    return UnprocessableEntity(new ResponseDTO { code = 500, msg = "User already exists", data = "" });
+                    return UnprocessableEntity(new ResponseDTO { code = (int)HttpStatusCode.InternalServerError, msg = "User already exists", data = "" });
                 }
 
                 var _role = await _roleManager.FindByIdAsync(model.RoleId);
                 if (_role == null)
                 {
-                    return UnprocessableEntity(new ResponseDTO { code = 500, msg = "Role Not Exist", data = "" });
+                    return UnprocessableEntity(new ResponseDTO { code = (int)HttpStatusCode.InternalServerError, msg = "Role Not Exist", data = "" });
                 }
 
                 ApplicationUser user = new()
@@ -128,13 +129,13 @@ namespace AssetRegistry.Controllers
                 }
                 else
                 {
-                    return UnprocessableEntity(new ResponseDTO { code = 500, msg = "User creation failed", data = "" });
+                    return UnprocessableEntity(new ResponseDTO { code = (int)HttpStatusCode.InternalServerError, msg = "User creation failed", data = "" });
                 }
-                return Ok(new ResponseDTO { code = 200, msg = "User created successfully", data = "" });
+                return Ok(new ResponseDTO { code = (int)HttpStatusCode.OK, msg = "User created successfully", data = "" });
             }
             catch (Exception ex)
             {
-                return UnprocessableEntity(new ResponseDTO { code = 500, msg = $"{ex.Message}", data = "" });
+                return UnprocessableEntity(new ResponseDTO { code = (int)HttpStatusCode.InternalServerError, msg = $"{ex.Message}", data = "" });
             }
         }
 
@@ -146,7 +147,7 @@ namespace AssetRegistry.Controllers
             {
                 if (string.IsNullOrWhiteSpace(model.Email) || !new EmailAddressAttribute().IsValid(model.Email))
                 {
-                    return UnprocessableEntity(new ResponseDTO { code = 500, msg = "Invalid email address", data = "" });
+                    return UnprocessableEntity(new ResponseDTO { code = (int)HttpStatusCode.InternalServerError, msg = "Invalid email address", data = "" });
                 }
 
                 var _user = await _userManager.FindByIdAsync(model.UserId);
@@ -166,13 +167,13 @@ namespace AssetRegistry.Controllers
 
                 if (!result.Succeeded)
                 {
-                    return UnprocessableEntity(new ResponseDTO { code = 500, msg = "User update failed", data = "" });
+                    return UnprocessableEntity(new ResponseDTO { code = (int)HttpStatusCode.InternalServerError, msg = "User update failed", data = "" });
                 }
-                return Ok(new ResponseDTO { code = 200, msg = "User updated successfully", data = "" });
+                return Ok(new ResponseDTO { code = (int)HttpStatusCode.OK, msg = "User updated successfully", data = "" });
             }
             catch (Exception ex)
             {
-                return UnprocessableEntity(new ResponseDTO { code = 500, msg = $"{ex.Message}", data = "" });
+                return UnprocessableEntity(new ResponseDTO { code = (int)HttpStatusCode.InternalServerError, msg = $"{ex.Message}", data = "" });
             }
         }
 
@@ -190,11 +191,11 @@ namespace AssetRegistry.Controllers
                 _user.IsActive = false;
                 await _userManager.UpdateAsync(_user);
 
-                return Ok(new ResponseDTO { code = 200, msg = "User deactivate successfully", data = "" });
+                return Ok(new ResponseDTO { code = (int)HttpStatusCode.OK, msg = "User deactivate successfully", data = "" });
             }
             catch (Exception ex)
             {
-                return UnprocessableEntity(new ResponseDTO { code = 500, msg = $"{ex.Message}", data = "" });
+                return UnprocessableEntity(new ResponseDTO { code = (int)HttpStatusCode.InternalServerError, msg = $"{ex.Message}", data = "" });
             }
         }
     }
