@@ -16,18 +16,15 @@ namespace AssetRegistry.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _context;
-        private readonly IConfiguration _configuration;
 
         public UserController(
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            ApplicationDbContext context,
-            IConfiguration configuration)
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _context = context;
-            _configuration = configuration;
         }
 
         [HttpGet]
@@ -36,9 +33,39 @@ namespace AssetRegistry.Controllers
         {
             try
             {
-                var users = await (from us in _context.ApplicationUsers
+                var _users = await (from us in _context.ApplicationUsers
+                                    join ur in _context.UserRoles on us.Id equals ur.UserId
+                                    join ro in _context.Roles on ur.RoleId equals ro.Id
+                                    select new UserListDTO()
+                                    {
+                                        Id = us.Id,
+                                        FirstName = us.FirstName,
+                                        LastName = us.LastName,
+                                        Email = us.Email,
+                                        Nic = us.Nic,
+                                        Address = us.Address,
+                                        IsActive = us.IsActive,
+                                        RoleId = ur.RoleId,
+                                        RoleName = ro.Name
+                                    }).ToListAsync();
+                return Ok(_users);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        [Route("GetById{id}")]
+        public async Task<IActionResult> GetByIdAsync(string id)
+        {
+            try
+            {
+                var _user = await (from us in _context.ApplicationUsers
                                    join ur in _context.UserRoles on us.Id equals ur.UserId
                                    join ro in _context.Roles on ur.RoleId equals ro.Id
+                                   where us.Id == id
                                    select new UserListDTO()
                                    {
                                        Id = us.Id,
@@ -51,7 +78,7 @@ namespace AssetRegistry.Controllers
                                        RoleId = ur.RoleId,
                                        RoleName = ro.Name
                                    }).ToListAsync();
-                return Ok(users);
+                return Ok(_user);
             }
             catch (Exception ex)
             {
