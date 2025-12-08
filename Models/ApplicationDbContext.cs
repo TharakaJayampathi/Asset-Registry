@@ -1,15 +1,16 @@
 ﻿using AssetRegistry.Models.Logs;
 using AssetRegistry.Models.User;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
-
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IHttpContextAccessor? _httpContextAccessor;
 
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHttpContextAccessor httpContextAccessor)
+    // IHttpContextAccessor is optional to allow design-time migrations
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHttpContextAccessor? httpContextAccessor = null)
         : base(options)
     {
         _httpContextAccessor = httpContextAccessor;
@@ -20,7 +21,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         ChangeTracker.DetectChanges();
 
         var modifiedEntities = ChangeTracker.Entries();
-        List<DataTransactionLog> logList = new List<DataTransactionLog>();
+        var logList = new List<DataTransactionLog>();
 
         foreach (var change in modifiedEntities)
         {
@@ -39,7 +40,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                     TransactionDate = DateTime.Now
                 };
 
-                List<TransactionLogDetail> logDetails = new List<TransactionLogDetail>();
+                var logDetails = new List<TransactionLogDetail>();
                 foreach (var property in currentValues.Properties)
                 {
                     logDetails.Add(new TransactionLogDetail
@@ -55,15 +56,18 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             }
         }
 
-        await base.AddRangeAsync(logList);
-        var result = await base.SaveChangesAsync(cancellationToken);
+        if (logList.Any())
+            await base.AddRangeAsync(logList, cancellationToken);
 
-        return result;
+        return await base.SaveChangesAsync(cancellationToken);
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        // Optional: Add any custom configurations
+        // builder.Entity<ApplicationUser>().Property(u => u.SomeProperty).HasMaxLength(100);
     }
 
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
